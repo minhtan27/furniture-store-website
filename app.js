@@ -1,3 +1,14 @@
+// content full
+const client = contentful.createClient({
+  // This is the space ID. A space is like a project folder in Contentful terms
+  space: "wco4fvyvde01",
+  // This is the access token for this space. Normally you get both ID and the token in the Contentful web app
+  accessToken: "JhAbFr2RxXJ2ZJgNsyTC2UrGPrwpwSEIUvLfmxfbbfg",
+});
+
+console.log(client);
+// This API call will request an entry with the specified ID from the space defined at the top, using a space-specific access token.
+
 // variables
 
 const cartBtn = document.querySelector(".cart-btn");
@@ -17,9 +28,9 @@ cart = [];
 class Products {
   async getProducts() {
     try {
-      let response = await fetch("products.json");
-      let result = await response.json();
-
+      let result = await client.getEntries({
+        content_type: "comfyHouse",
+      });
       let products = result.items.map((item) => {
         let { id } = item.sys;
         let { title, price } = item.fields;
@@ -229,7 +240,8 @@ class UI {
   bagBtnsDOMUpdate(cart) {
     bagBtnsDOM.forEach((button) => {
       if (!cart.find((item) => item.id === button.dataset.id)) {
-        button.textContent = "add to cart";
+        button.innerHTML = ` <i class="fas fa-shopping-cart"></i>
+              add to bag`;
         button.disabled = false;
       }
     });
